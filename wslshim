@@ -14,29 +14,31 @@ if [ "$1" == "-f" ]; then
   shift
 fi
 
-if [ -L ./"${1}" ]; then
+if [ -L "${targetDir}"/"${1}" ]; then
   echo overwriting existing "${1}"
-  rm ./"${1}"
-elif [ -e ./"${1}" ]; then
+  rm "${targetDir}"/"${1}"
+elif [ -e "${targetDir}"/"${1}" ]; then
   echo "${1}" exists but is not a symlink, exiting.
   exit 1
 fi
 
+target="${targetDir}/${1}"
 if (which "${1}".ps1); then
-  echo '#!/bin/bash' >./"${1}"
+  echo '#!/bin/bash' >"${target}"
   if [ "$map" ]; then
-    echo 'rp=$(realpath "$1")' >>./"${1}"
-    echo 'arg=$(wslpath -w "$rp")' >>./"${1}"
-    echo "powershell -file '"$(wslpath -w $(which "${1}".ps1))"' "'"$arg"' >>./"${1}"
+    echo 'rp=$(realpath "$1")' >>"${target}"
+    echo 'arg=$(wslpath -w "$rp")' >>"${target}"
+    echo "powershell -file '"$(wslpath -w $(which "${1}".ps1))"' "'"$arg"' >>"${target}"
   else
-    echo "powershell -file '"$(wslpath -w $(which "${1}".ps1))"' \$@" >>./"${1}"
+    echo "powershell -file '"$(wslpath -w $(which "${1}".ps1))"' \$@" >>"${target}"
   fi
-  chmod u+x ./"${1}"
+  chmod u+x "${target}"
+  echo success: "${1}".ps1 mapped to "${target}"
   exit 0
 fi
 
 if [ -z "${map}" ]; then
-  ln -s "$(which $1.exe)" "$1" || ln -s "$(which $1.cmd)" "$1" || ln -s "$(which $1.bat)" "${1}"
+  ln -s "$(which $1.exe)" "$1" || ln -s "$(which $1.cmd)" "$1" || ln -s "$(which $1.bat)" "${target}"
 else
   target="${targetDir}/${1}-link"
   if [ -L "${target}" ]; then
@@ -48,9 +50,11 @@ else
   fi
 
   ln -s "$(which $1.exe)" "${target}" || ln -s "$(which $1.cmd)" "${target}" || ln -s "$(which $1.bat)" "${target}"
-  echo '#!/bin/bash' >>./"${1}"
-  echo 'rp=$(realpath "$1")' >>./"${1}"
-  echo 'arg=$(wslpath -w "$rp")' >>./"${1}"
-  echo "\"${target}\" \"\$arg\"" >>./"${1}"
-  chmod u+x ./"${1}"
+  echo '#!/bin/bash' >> "${targetDir}"/"${1}"
+  echo 'rp=$(realpath "$1")' >> "${targetDir}"/"${1}"
+  echo 'arg=$(wslpath -w "$rp")' >> "${targetDir}"/"${1}"
+  echo "\"${target}\" \"\$arg\"" >> "${targetDir}"/"${1}"
+  chmod u+x "${targetDir}"/"${1}"
+  echo success: "${1}" mapped to "${targetDir}"/"${1}"
+  exit 0
 fi
