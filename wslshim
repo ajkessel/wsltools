@@ -1,16 +1,16 @@
 #!/bin/bash
 targetDir=$HOME/.local/bin
 mkdir -p "${targetDir}"
-cd "${targetDir}"
+cd "${targetDir}" || (echo could not access "${targetDir}" && exit 1)
 if [[ "$1" == "-h" || -z "$1" ]]; then
-  echo syntax: $0 [-f] [windows executable]
-  echo use the -f switch if the windows executable needs a filename as a parameter so that WSL path will be mapped to windows path
+  echo syntax: "$0" [-f] [windows executable]
+  echo use the -f switch if the windows executable needs a filename as a parameter so that WSL path will be fileParamped to windows path
   echo make sure "${targetDir}" is in your path
   exit 0
 fi
 
 if [ "${1}" == "-f" ]; then
-  map=1
+  fileParam=1
   shift
 fi
 
@@ -23,37 +23,43 @@ elif [ -e "${targetDir}"/"${1}" ]; then
 fi
 
 target="${targetDir}/${1}"
-if (which "${1}".ps1); then
+psFile=$(which "${1}".ps1)
+if [ "${psFile}" ]; then
+  winPath=$(wslpath -w "$(realpath "${psFile}")")
   echo '#!/bin/bash' >"${target}"
-  if [ "$map" ]; then
-    echo 'rp=$(realpath "$1")' >>"${target}"
-    echo 'arg=$(wslpath -w "$rp")' >>"${target}"
-    echo "powershell -file '"$(wslpath -w $(which "${1}".ps1))"' "'"$arg"' >>"${target}"
+  if [ "$fileParam" ]; then
+    cat >>"${target}" <<EOF
+rp=\$(realpath "\${1}")
+arg=\$(wslpath -w "\${rp}")
+powershell -file "$winPath" "\${arg}"
+EOF
   else
-    echo "powershell -file '"$(wslpath -w $(which "${1}".ps1))"' \$@" >>"${target}"
+    printf "powershell -file '%s' \$@\n" "$winPath" >>"${target}"
   fi
   chmod u+x "${target}"
   echo success: "${1}".ps1 mapped to "${target}"
   exit 0
 fi
 
-if [ -z "${map}" ]; then
-  ln -s "$(which $1.exe)" "$1" || ln -s "$(which $1.cmd)" "$1" || ln -s "$(which $1.bat)" "${target}"
+if [ -z "${fileParam}" ]; then
+  ln -s "$(which "${1}".exe)" "${1}" || ln -s "$(which "${1}".cmd)" "${1}" || ln -s "$(which "${1}".bat)" "${target}"
 else
-  target="${targetDir}/${1}-link"
-  if [ -L "${target}" ]; then
-    echo overwriting existing "${target}" symlink
-    rm "${target}"
-  elif [ -L "${target}" ]; then
-    echo "${target}" already exists as a file, exiting
+  targetLink="${targetDir}/${1}-link"
+  if [ -L "${targetLink}" ]; then
+    echo overwriting existing "${targetLink}" symlink
+    rm "${targetLink}"
+  elif [ -e "${targetLink}" ]; then
+    echo "${targetLink}" already exists as a file, exiting
     exit 1
   fi
 
-  ln -s "$(which $1.exe)" "${target}" || ln -s "$(which $1.cmd)" "${target}" || ln -s "$(which $1.bat)" "${target}"
-  echo '#!/bin/bash' >> "${targetDir}"/"${1}"
-  echo 'rp=$(realpath "$1")' >> "${targetDir}"/"${1}"
-  echo 'arg=$(wslpath -w "$rp")' >> "${targetDir}"/"${1}"
-  echo "\"${target}\" \"\$arg\"" >> "${targetDir}"/"${1}"
+  ln -s "$(which "${1}".exe)" "${targetLink}" || ln -s "$(which "${1}".cmd)" "${targetLink}" || ln -s "$(which "${1}".bat)" "${targetLink}"
+  cat >>"${target}" <<EOF
+#!/bin/bash
+rp=\$(realpath "\${1}")
+arg=\$(wslpath -w "\${rp}")
+"${targetLink}" "\${arg}"
+EOF
   chmod u+x "${targetDir}"/"${1}"
   echo success: "${1}" mapped to "${targetDir}"/"${1}"
   exit 0
