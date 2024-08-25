@@ -5,17 +5,17 @@ cd "${targetDir}"
 if [[ "$1" == "-h" || -z "$1" ]]; then
   echo syntax: $0 [-f] [windows executable]
   echo use the -f switch if the windows executable needs a filename as a parameter so that WSL path will be mapped to windows path
-  echo make sure "$targetDir}" is in your path
+  echo make sure "${targetDir}" is in your path
   exit 0
 fi
 
-if [ "$1" == "-f" ]; then
+if [ "${1}" == "-f" ]; then
   map=1
   shift
 fi
 
 if [ -L "${targetDir}"/"${1}" ]; then
-  echo overwriting existing "${1}"
+  echo overwriting existing "${1}" symlink
   rm "${targetDir}"/"${1}"
 elif [ -e "${targetDir}"/"${1}" ]; then
   echo "${1}" exists but is not a symlink, exiting.
@@ -42,7 +42,7 @@ if [ -z "${map}" ]; then
 else
   target="${targetDir}/${1}-link"
   if [ -L "${target}" ]; then
-    echo overwriting existing "${target}"
+    echo overwriting existing "${target}" symlink
     rm "${target}"
   elif [ -L "${target}" ]; then
     echo "${target}" already exists as a file, exiting
