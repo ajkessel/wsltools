@@ -7,36 +7,48 @@ then
   echo use the -f switch if the windows executable needs to accept a filename as a parameter
   echo make sure ~/.local/bin is in your path
   exit 0
-fi
-
-if [ "$1" == "-f" ]
-then
-  map=1
-  shift
-fi
-
-if [ -L ./"${1}" ]
-then
-  echo overwriting existing "${1}"
-  rm ./"${1}"
-elif [ -e ./"${1}" ]
-then
-  echo "${1}" exists but is not a symlink, exiting.
-  exit 1
-fi
-
-ln -s "`which $1.exe`" "$1" || ln -s "`which $1.cmd`" "$1" || ln -s "`which $1.bat`" "$1"
-
-if [ ! -e ./"${1}" ] && ( which "${1}".ps1 )
-then
-  echo '#!/bin/bash' > ./"${1}"
-  if [ "$map" ] 
-  then
-    echo 'rp=$(realpath "$1")' >> ./"${1}"
-    echo 'arg=$(wslpath -w "$rp")' >> ./"${1}"
-    echo "powershell -file '"$(wslpath -w `which "${1}".ps1`)"' "'"$arg"' >> ./"${1}"
-  else
-    echo "powershell -file '"$(wslpath -w `which "${1}".ps1`)"' \$@" >> ./"${1}"
   fi
-  chmod u+x ./"${1}"
-fi
+
+  if [ "$1" == "-f" ]
+  then
+    map=1
+    shift
+  fi
+
+  if [ -L ./"${1}" ]
+  then
+    echo overwriting existing "${1}"
+    rm ./"${1}"
+  elif [ -e ./"${1}" ]
+  then
+    echo "${1}" exists but is not a symlink, exiting.
+    exit 1
+  fi
+
+  if ( which "${1}".ps1 )
+  then
+    echo '#!/bin/bash' > ./"${1}"
+    if [ "$map" ] 
+    then
+      echo 'rp=$(realpath "$1")' >> ./"${1}"
+      echo 'arg=$(wslpath -w "$rp")' >> ./"${1}"
+      echo "powershell -file '"$(wslpath -w `which "${1}".ps1`)"' "'"$arg"' >> ./"${1}"
+    else
+      echo "powershell -file '"$(wslpath -w `which "${1}".ps1`)"' \$@" >> ./"${1}"
+    fi
+    chmod u+x ./"${1}"
+    exit 0
+  fi
+
+  if [ -z "${map}" ]
+  then
+    ln -s "`which $1.exe`" "$1" || ln -s "`which $1.cmd`" "$1" || ln -s "`which $1.bat`" "${1}"
+  else
+    target="./${1}-link"
+    ln -s "`which $1.exe`" "${target}" || ln -s "`which $1.cmd`" "${target}" || ln -s "`which $1.bat`" "${target}"
+    echo '#!/bin/bash' >> ./"${1}"
+    echo 'rp=$(realpath "$1")' >>  ./"${1}"
+    echo 'arg=$(wslpath -w "$rp")' >> ./"${1}"
+    echo "\"${target}\" \"\$arg\"" >> ./"${1}"
+    chmod u+x "${target}" ./"${1}"
+  fi
