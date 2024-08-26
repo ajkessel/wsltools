@@ -21,12 +21,12 @@ appendWindowsPath=false
 ```
 * Copy [wsl.conf](wsl.conf) from this repository to `/etc/binfmt.d`
 * Copy [wsl-wrapper](wsl-wrapper) to `/usr/local/bin`
-* Restart your WSL instance (e.g. `wsl --shutdown` from PowerShell)
+* Reload binfmt configuration (either `sudo systemctl restart systemd-binfmt' or just restart WSL instance `wsl --shutdown` from PowerShell)
 ## PowerShell
 You can use this same technique to make PowerShell scripts executable just from their filenames in WSL. Follow these steps:
 * Copy [powershell.conf](powershell.conf) to `/etc/binfmt.d`
 * Copy [powershell-wrapper](powershell-wrapper) to `/usr/local/bin/`
-* Restart WSL
+* Reload binfmt or restart WSL
 
 You should then be able to execute a PowerShell just by name (e.g., `~/myscript.ps1 argument1 argument2`) and it will work from WSL.
 
