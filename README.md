@@ -19,8 +19,8 @@ This should open the Windows gvim.exe executable with a split-pane view and both
 enabled=true
 appendWindowsPath=false
 ```
-* Copy wsl.conf from this repository to /etc/binfmt.d
-* wsl-wrapper to /usr/local/bin
+* Copy [wsl.conf](wsl.conf) from this repository to /etc/binfmt.d
+* Copy [wsl-wrapper](wsl-wrapper) to /usr/local/bin
 * Restart your WSL install
 ## wslshim 
 [wslshim](wslshim) is a script that will symlink a Windows executable into ~/.local/bin without the filename exetnsion. So, for example, if you run:
