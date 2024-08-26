@@ -1,11 +1,11 @@
 ## Background
 [wsl-wrapper](wsl-wrapper) allows you to execute Windows commands in WSL with proper pathname parsing.
 
-For example, if notepad.exe is in your path, you could execute:
+For example, if notepad.exe is in your path, with this solution, you can execute:
 ```
 notepad.exe ~/readme.txt
 ```
-Causing notepad to open and correctly find readme.txt in your WSL home directory.
+...causing notepad to open and correctly find readme.txt in your WSL home directory, rather than throw an error because it doesn't know about `~`.
 
 This wrapper should also allowed you to specify a number of parameters, including command-line switches and multiple filenames, for example:
 ```
