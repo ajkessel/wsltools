@@ -21,7 +21,7 @@ appendWindowsPath=false
 ```
 * Copy [wsl.conf](wsl.conf) from this repository to /etc/binfmt.d
 * Copy [wsl-wrapper](wsl-wrapper) to /usr/local/bin
-* Restart your WSL install
+* Restart your WSL instance (e.g. `wsl --shutdown` from PowerShell)
 ## wslshim 
 [wslshim](wslshim) is a script that will symlink a Windows executable into ~/.local/bin without the filename exetnsion. So, for example, if you run:
 ```
