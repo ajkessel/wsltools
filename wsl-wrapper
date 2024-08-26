@@ -1,17 +1,15 @@
 #!/bin/bash
 arg=("$@")
-args="${arg[@]:2}"
+args=("${arg[@]:2}")
 newargs=()
-for var in $args
+for var in "${args[@]}"
 do
-	echo processing $var
 	if [ -e "${var}" ]
 	then
-		nextitem=$(wslpath -w $(realpath "${var}"))
+		nextitem=$(wslpath -w "$(realpath "${var}")")
 	else
 		nextitem="${var}"
 	fi
-	echo got $nextitem
 	newargs+=("${nextitem}")
 done
-/init $1 $2 "${newargs[@]}"
+/init "${1}" "${2}" "${newargs[@]}"
