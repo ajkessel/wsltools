@@ -5,13 +5,13 @@ For example, if notepad.exe is in your path, with this solution, you can execute
 ```
 notepad.exe ~/readme.txt
 ```
-...causing notepad to open and correctly find readme.txt in your WSL home directory, rather than throw an error because it doesn't know about `~`.
+...causing notepad to open and correctly find `readme.txt` in your WSL home directory, rather than throw an error because it doesn't know about `~`.
 
 This wrapper should also allow you to specify a number of parameters, including command-line switches and multiple filenames, for example:
 ```
 gvim.exe -o ~/file1.txt ~/path/file2.txt
 ```
-This should open the Windows gvim.exe executable with a split-pane view and both file1.txt and file2.txt from your WSL home directory open.
+This should open the Windows `gvim.exe` executable with a split-pane view and both `file1.txt` and `path/file2.txt` from your WSL home directory open.
 ## Installation
 * Make sure you have these lines in `/etc/wsl.conf`:
 ```
