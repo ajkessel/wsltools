@@ -23,7 +23,7 @@ appendWindowsPath=false
 * Copy [wsl-wrapper](wsl-wrapper) to `/usr/local/bin`
 * Reload binfmt configuration (either `sudo systemctl restart systemd-binfmt` or just restart WSL instance `wsl --shutdown` from PowerShell)
 ## PowerShell
-You can use this same technique to make PowerShell scripts executable just from their filenames in WSL. Follow these steps:
+You can use this same technique to make PowerShell scripts executable just from their filenames in WSL with the wrapper [powershell-wrapper](powershell-wrapper). Follow these steps:
 * Copy [powershell.conf](powershell.conf) to `/etc/binfmt.d`
 * Copy [powershell-wrapper](powershell-wrapper) to `/usr/local/bin/`
 * Reload binfmt or restart WSL
