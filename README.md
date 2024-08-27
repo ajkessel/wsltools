@@ -31,6 +31,13 @@ You can use this same technique to make PowerShell scripts executable just from 
 You should then be able to execute a PowerShell just by name (e.g., `~/myscript.ps1 argument1 argument2`) and it will work from WSL.
 
 As currently implemented, the PowerShell wrapper does its best to find a Windows PowerShell executable, and if that fails, it tries to find a PowerShell executable. Feel free to hardcode `$powerExe` in the script with your path preference.
+## Office
+Same deal with Microsoft Office files via [office-wrapper](office-wrapper). Follow these steps:
+* Copy [office.conf](office.conf) to `/etc/binfmt.d`
+* Copy [office-wrapper](office-wrapper) to `/usr/local/bin/`
+* Reload binfmt or restart WSL
+
+You should then be able to open a Microsoft Office document just by name (e.g., `~/docs/mydocument.docx` or `/mnt/c/documents/myspreadsheet.xlsx`) and it will work from WSL.
 ## wslshim 
 [wslshim](wslshim) is a script that will symlink a Windows executable into ~/.local/bin without the filename extension. So, for example, if you run:
 ```
