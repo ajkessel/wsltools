@@ -1,21 +1,27 @@
 #!/bin/bash
 powerExe=""
+if [ ! -e "${1}" ]; then
+	echo could not find script "${1}" to execute
+	exit 1
+fi
+sysroot=$(cmd.exe /c "echo %SYSTEMROOT%"|grep -o '^.'|tr '[:upper:]' '[:lower:]')
+[ -z "${sysroot}" ] && sysroot=c
 {
 if ( command -v powershell.exe )
 then
   powerExe="$(which powershell.exe)"
-elif ( command -v "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" )  
+elif ( command -v "/mnt/${sysroot}/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" )  
 then
-  powerExe='/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' 
-elif ( command -v "/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" ) 
+  powerExe="/mnt/${sysroot}/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
+elif ( command -v "/mnt/${sysroot}/Windows/System32/WindowsPowerShell/v1.0/powershell.exe" ) 
 then
-  powerExe='/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe' 
+  powerExe="/mnt/${sysroot}/Windows/System32/WindowsPowerShell/v1.0/powershell.exe"
 elif ( command -v pwsh.exe )
 then
   powerExe="$(which pwsh.exe)"
-elif ( command -v "/mnt/c/Program Files/PowerShell/7/pwsh.exe" ) 
+elif ( command -v "/mnt/${sysroot}/Program Files/PowerShell/7/pwsh.exe" ) 
 then
-  powerExe="/mnt/c/Program Files/PowerShell/7/pwsh.exe" 
+  powerExe="/mnt/${sysroot}/Program Files/PowerShell/7/pwsh.exe" 
 else
   drives=$(grep -i 9p /proc/mounts|grep -oi " /mnt/. ")
   for drive in ${drives}

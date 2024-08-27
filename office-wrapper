@@ -1,0 +1,61 @@
+#!/bin/bash
+officeExe=""
+if [ ! -e "${1}" ]; then
+	echo could not file "${1}" to open
+	exit 1
+fi
+sysroot=$(cmd.exe /c "echo %SYSTEMROOT%"|grep -o '^.'|tr '[:upper:]' '[:lower:]')
+[ -z "${sysroot}" ] && sysroot=c
+type="$(file "$1" | tr '[:upper:]' '[:lower:]')"
+case $type in
+*word*)
+	executable="winword.exe"
+	;;
+*excel*)
+	executable="excel.exe"
+	;;
+*powerpoint*)
+	executable="powerpnt.exe"
+	;;
+*)
+	echo "could not recognize document type"
+	exit 1
+	;;
+esac
+{
+	if (command -v ${executable}); then
+		officeExe="$(which ${executable})"
+	elif (command -v "/mnt/${sysroot}/Program Files/Microsoft Office/root/Office16/${executable}"); then
+		officeExe="/mnt/${sysroot}/Program Files/Microsoft Office/root/Office16/${executable}"
+	else
+		officeExe=$(find "/mnt/${sysroot}/Program Files/Microsoft Office/" -iname "${executable}" | head -1)
+		if [ -z "${officeExe}" ]; then
+			officeExe=$(find "/mnt/${sysroot}/Program Files (x86)/Microsoft Office/" -iname "${executable}" | head -1)
+		fi
+		if [ -z "${officeExe}" ]; then
+			drives=$(grep -i 9p /proc/mounts | grep -oi " /mnt/. ")
+			for drive in ${drives}; do
+				if (command -v "/mnt/${drive}/Program Files/Microsoft Office/root/Office16/${executable}"); then
+					officeExe="/mnt/${drive}/Program Files/Microsoft Office/root/Office16/${executable}"
+				fi
+			done
+		fi
+	fi
+} >/dev/null
+
+if [ -z "${officeExe}" ]; then
+	echo Office executable could not be found, exiting.
+	exit 1
+fi
+
+args=("$@")
+newargs=()
+for var in "${args[@]}"; do
+	if [ -e "${var}" ]; then
+		nextitem=$(wslpath -w "$(realpath "${var}")")
+	else
+		nextitem="${var}"
+	fi
+	newargs+=("${nextitem}")
+done
+"${officeExe}" -file "${newargs[0]}" "${newargs[@]:1}"
