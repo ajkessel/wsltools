@@ -21,11 +21,13 @@ appendWindowsPath=false
 ```
 * Copy [wsl.conf](wsl.conf) from this repository to `/etc/binfmt.d`
 * Copy [wsl-wrapper](wsl-wrapper) to `/usr/local/bin`
+* Make sure the file is world-readable/executable (`chmod a+rx /usr/local/bin/wsl-wrapper`)
 * Reload binfmt configuration (either `sudo systemctl restart systemd-binfmt` or just restart WSL instance `wsl --shutdown` from PowerShell)
 ## PowerShell
 You can use this same technique to make PowerShell scripts executable just from their filenames in WSL with the wrapper [powershell-wrapper](powershell-wrapper). Follow these steps:
 * Copy [powershell.conf](powershell.conf) to `/etc/binfmt.d`
 * Copy [powershell-wrapper](powershell-wrapper) to `/usr/local/bin/`
+* Make sure the file is world-readable/executable (`chmod a+rx /usr/local/bin/powershell-wrapper`)
 * Reload binfmt or restart WSL
 
 You should then be able to execute a PowerShell just by name (e.g., `~/myscript.ps1 argument1 argument2`) and it will work from WSL.
@@ -35,6 +37,7 @@ As currently implemented, the PowerShell wrapper does its best to find a Windows
 Same deal with Microsoft Office files via [office-wrapper](office-wrapper). Follow these steps:
 * Copy [office.conf](office.conf) to `/etc/binfmt.d`
 * Copy [office-wrapper](office-wrapper) to `/usr/local/bin/`
+* Make sure the file is world-readable/executable (`chmod a+rx /usr/local/bin/office-wrapper`)
 * Reload binfmt or restart WSL
 
 You should then be able to open a Microsoft Office document just by name (e.g., `~/docs/mydocument.docx` or `/mnt/c/documents/myspreadsheet.xlsx`) and it will work from WSL.
