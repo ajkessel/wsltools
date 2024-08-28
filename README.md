@@ -1,3 +1,5 @@
+## Quickstart
+Just run [install.sh](install.sh) as root.
 ## Background
 [wsl-wrapper](wsl-wrapper) allows you to execute Windows commands in WSL with proper pathname parsing.
 
@@ -50,4 +52,4 @@ wslshim notepad
 
 You can optionally use wslshim to map filename arguments to the executable, similar to the wrapper method above, by specifying `-f` with the invocation. But the [wsl-wrapper](wsl-wrapper) method renders that unnecessary.
 ## TODO
-If there is enough interest in this, I may package it up as a Debian/Ubuntu package for easier installation, or at least add an installation script to this repository.
+If there is enough interest in this, I may package it up as a Debian/Ubuntu package for easier installatioa.n
