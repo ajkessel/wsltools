@@ -1,5 +1,5 @@
 ## Quickstart
-Just run [install.sh](install.sh) as root.
+Just clone this repository (`git clone https://github.com/ajkessel/wsltools.git`) and then run [install.sh](install.sh) as root.
 ## Background
 [wsl-wrapper](wsl-wrapper) allows you to execute Windows commands in WSL with proper pathname parsing.
 
