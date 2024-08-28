@@ -15,7 +15,7 @@ gvim.exe -o ~/file1.txt ~/path/file2.txt
 ```
 This should open the Windows `gvim.exe` executable with a split-pane view and both `file1.txt` and `path/file2.txt` from your WSL home directory open.
 ## Installation
-* Make sure you have these lines in `/etc/wsl.conf`:
+* First, make sure you have these lines in `/etc/wsl.conf`, as described in [https://learn.microsoft.com/en-us/windows/wsl/wsl-config](https://learn.microsoft.com/en-us/windows/wsl/wsl-config):
 ```
 [interop]
 enabled=true
