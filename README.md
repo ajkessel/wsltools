@@ -51,5 +51,13 @@ wslshim notepad
 ...it will locate notepad.exe and create a symlink to it in ~/.local/bin/notepad.
 
 You can optionally use wslshim to map filename arguments to the executable, similar to the wrapper method above, by specifying `-f` with the invocation. But the [wsl-wrapper](wsl-wrapper) method renders that unnecessary.
+## Troubleshooting
+If you see this message in `/var/log/syslog`:
+```
+systemd[1]: systemd-binfmt.service - Set Up Additional Binary Formats was skipped because of an unmet condition check (ConditionVirtualization=!wsl).
+```
+You can fix it by removing `/usr/lib/systemd/system/systemd-binfmt.service.d/wsl.conf` (or commenting out the ConditionVirtualization line therein), and then restart WSL.
+
+I have filed [an issue on WSL](https://github.com/microsoft/WSL/issues/12013) to try to figure out what's going on with that as it only recently started happening.
 ## TODO
 If there is enough interest in this, I may package it up as a Debian/Ubuntu package for easier installation.
